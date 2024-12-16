@@ -1,0 +1,121 @@
+version: "3.7"
+
+services:
+  primary1:
+    image: neo4j:5.4.0-enterprise
+    container_name: primary1
+    ports:
+      - 7414:7474
+      - 7617:7687
+    volumes:
+      - ./primary1/data:/data
+      - ./import:/import
+      - ./primary1/logs:/logs
+    environment:
+      - NEO4J_AUTH=neo4j/secret123
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_initial_dbms_default__primaries__count=1
+      - NEO4J_initial_dbms_default__secondaries__count=3
+      - NEO4J_dbms_cluster_discovery_endpoints=primary1:5000
+      - NEO4J_initial_server_mode__constraint=PRIMARY
+      - NEO4J_server_cluster_system__database__mode=PRIMARY
+      - NEO4J_server_cluster_advertised__address=primary1:6000
+      - NEO4J_server_discovery_advertised__address=primary1:5000
+      - NEO4J_server_cluster_raft_advertised__address=primary1:7000
+      - NEO4J_server_routing_advertised__address=primary1:7688
+      - NEO4J_server_bolt_advertised__address=localhost:7617
+      - NEO4J_dbms_routing_enabled=true
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1000m
+
+
+  secondary1:
+    image: neo4j:5.4.0-enterprise
+    container_name: secondary1
+    ports:
+      - 7424:7474
+      - 7627:7687
+    volumes:
+      - ./secondary1/data:/data
+      - ./secondary1/logs:/logs
+    environment:
+      - NEO4J_AUTH=neo4j/secret123
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_initial_dbms_default__primaries__count=1
+      - NEO4J_initial_dbms_default__secondaries__count=3
+      - NEO4J_dbms_cluster_discovery_endpoints=primary1:5000
+      - NEO4J_initial_server_mode__constraint=SECONDARY
+      - NEO4J_server_cluster_system__database__mode=secondary
+      - NEO4J_server_cluster_advertised__address=secondary1:6000
+      - NEO4J_server_discovery_advertised__address=secondary1:5000
+      - NEO4J_server_cluster_raft_advertised__address=secondary1:7000
+      - NEO4J_server_routing_advertised__address=secondary1:7688
+      - NEO4J_server_bolt_advertised__address=localhost:7627
+      - NEO4J_dbms_routing_enabled=true
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1000m
+
+
+  secondary2:
+    image: neo4j:5.4.0-enterprise
+    container_name: secondary2
+    ports:
+      - 7434:7474
+      - 7637:7687
+    volumes:
+      - ./secondary2/data:/data
+      - ./secondary2/logs:/logs
+    environment:
+      - NEO4J_AUTH=neo4j/secret123
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_initial_dbms_default__primaries__count=1
+      - NEO4J_initial_dbms_default__secondaries__count=3
+      - NEO4J_dbms_cluster_discovery_endpoints=primary1:5000
+      - NEO4J_initial_server_mode__constraint=SECONDARY
+      - NEO4J_server_cluster_system__database__mode=secondary
+      - NEO4J_server_cluster_advertised__address=secondary2:6000
+      - NEO4J_server_discovery_advertised__address=secondary2:5000
+      - NEO4J_server_cluster_raft_advertised__address=secondary2:7000
+      - NEO4J_server_routing_advertised__address=secondary2:7688
+      - NEO4J_server_bolt_advertised__address=localhost:7637
+      - NEO4J_dbms_routing_enabled=true
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1000m
+
+  secondary3:
+    image: neo4j:5.4.0-enterprise
+    container_name: secondary3
+    ports:
+      - 7444:7474
+      - 7647:7687
+    volumes:
+      - ./secondary3/data:/data
+      - ./secondary3/logs:/logs
+    environment:
+      - NEO4J_AUTH=neo4j/secret123
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_initial_dbms_default__primaries__count=1
+      - NEO4J_initial_dbms_default__secondaries__count=3
+      - NEO4J_dbms_cluster_discovery_endpoints=primary1:5000
+      - NEO4J_initial_server_mode__constraint=SECONDARY
+      - NEO4J_server_cluster_system__database__mode=secondary
+      - NEO4J_server_cluster_advertised__address=secondary3:6000
+      - NEO4J_server_discovery_advertised__address=secondary3:5000
+      - NEO4J_server_cluster_raft_advertised__address=secondary3:7000
+      - NEO4J_server_routing_advertised__address=secondary3:7688
+      - NEO4J_server_bolt_advertised__address=localhost:7647
+      - NEO4J_dbms_routing_enabled=true
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1000m
