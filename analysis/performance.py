@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 
 primary_uri = "bolt://localhost:7617"
-replica_uri = "neo4j://localhost:7617"
+cluster_uri = "neo4j://localhost:7617"
 user = "neo4j"
 password = "secret123"
 
@@ -58,26 +58,25 @@ def test_query_performance():
     t1 = time.time()
     # Test with one replica
     replica_connector_1 = Neo4jConnector(primary_uri, user, password)
-    print("Querying using a single node")
+    print("Querying using a single node:")
     with ThreadPoolExecutor() as executor:
         futures_replica_1 = [
             executor.submit(run, replica_connector_1, query) for query in queries
         ]
         [future.result() for future in futures_replica_1]
     t2 = time.time()
+    print(f"Time: {t2-t1:.2f}s")
     # Test with two replicas
-    print("Querying using the cluster")
-    replica_connector_2 = Neo4jConnector(replica_uri, user, password)
+    print("Querying using the cluster:")
+    replica_connector_2 = Neo4jConnector(cluster_uri, user, password)
     with ThreadPoolExecutor() as executor:
         futures_replica_1 = [
             executor.submit(run, replica_connector_2, query) for query in queries
         ]
         [future.result() for future in futures_replica_1]
     t3 = time.time()
+    print(f"Time: {t3-t2:.2f}s")
 
-    print("\nPerformance Results:")
-    print(f"First Run with one node: {t2-t1:.2f}s")
-    print(f"Run with clustered: {t3-t2}s")
 
 if __name__ == "__main__":
     test_query_performance()
